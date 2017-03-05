@@ -27,13 +27,7 @@ var cfgFile string
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:   "dbod",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "DB On Demand CLI",
 // Uncomment the following line if your bare application
 // has an action associated with it:
 //	Run: func(cmd *cobra.Command, args []string) { },
@@ -67,12 +61,18 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	}
 
-	viper.SetConfigName(".dbod") // name of config file (without extension)
+    viper.SetConfigType("yaml")
+    viper.SetConfigName(".dbodrc") // name of config file (without extension)
 	viper.AddConfigPath("$HOME")  // adding home directory as first search path
+    viper.AddConfigPath(".")               // optionally look for config in the working directory
 	viper.AutomaticEnv()          // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
-	}
+	} else {
+        panic(fmt.Errorf("Fatal error config file: %s \n", err))
+    }
 }
+
+
