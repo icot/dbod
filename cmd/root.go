@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"fmt"
+	log "github.com/Sirupsen/logrus"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -23,6 +24,7 @@ import (
 )
 
 var cfgFile string
+var DebugFlag bool
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -43,16 +45,16 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
+    cobra.OnInitialize(initConfig)
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports Persistent Flags, which, if defined here,
 	// will be global for your application.
 
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.dbod.yaml)")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.dbodrc.yaml)")
+	RootCmd.PersistentFlags().BoolVar(&DebugFlag, "debug", false, "Enable debug output")
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -69,9 +71,18 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+        log.Debug("Using config file:", viper.ConfigFileUsed())
 	} else {
-        panic(fmt.Errorf("Fatal error config file: %s \n", err))
+		log.Fatal((fmt.Errorf("Fatal error config file: %s \n", err)))
+    }
+    // Set Logging level according to debug flag. Default is Info
+    viper.BindPFlag("debug", RootCmd.PersistentFlags().Lookup("debug"))
+	if viper.GetBool("debug") {
+        log.SetLevel(log.DebugLevel)
+        log.Debug("Set log level to Debug")
+    } else {
+        log.SetLevel(log.InfoLevel)
+        log.Debug("Set log level to Info")
     }
 }
 

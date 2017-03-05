@@ -10,7 +10,7 @@ package cmd
 
 import (
 	"fmt"
-	"os"
+	log "github.com/Sirupsen/logrus"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -24,7 +24,6 @@ var dumpCmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(dumpCmd)
-
 	dumpCmd.Run = dump
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
@@ -40,10 +39,9 @@ func dump (cmd *cobra.Command, args []string) {
 	fmt.Println("dump called")
 	config := viper.GetViper() // Find and read the config file
 	if len(args) != 1 {
-		fmt.Println("Error: please run $ dbod " + dumpCmd.Use )
-		os.Exit(1)
+		log.Fatal("Error: please run $ dbod " + dumpCmd.Use )
 	}
 	instance := args[0]
 	url := fmt.Sprintf("%s/%s/metadata", config.Get("api_instance_uri"), instance)
-	fmt.Print(url)
+    log.Debug("API URL:" + url)
 }
