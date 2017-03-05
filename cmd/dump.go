@@ -1,11 +1,5 @@
 // Copyright © 2017 NAME HERE <EMAIL ADDRESS>
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,37 +10,40 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // dumpCmd represents the dump command
 var dumpCmd = &cobra.Command{
-	Use:   "dump",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		// TODO: Work your own magic here
-		fmt.Println("dump called")
-	},
+	Use:   "dump <instance>",
+	Short: "Dumps an instance metadata",
 }
 
 func init() {
 	RootCmd.AddCommand(dumpCmd)
 
-	// Here you will define your flags and configuration settings.
-
+	dumpCmd.Run = dump
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// dumpCmd.PersistentFlags().String("foo", "", "A help for foo")
+	//dumpCmd.PersistentFlags().String("instance", "", "database instance name")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// dumpCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
+}
+
+func dump (cmd *cobra.Command, args []string) {
+	fmt.Println("dump called")
+	config := viper.GetViper() // Find and read the config file
+	if len(args) != 1 {
+		fmt.Println("Error: please run $ dbod " + dumpCmd.Use )
+		os.Exit(1)
+	}
+	instance := args[0]
+	url := fmt.Sprintf("%s/%s/metadata", config.Get("api_instance_uri"), instance)
+	fmt.Print(url)
 }
