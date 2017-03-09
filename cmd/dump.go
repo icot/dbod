@@ -9,9 +9,11 @@
 package cmd
 
 import (
+    "encoding/json"
 	"fmt"
-	log "github.com/Sirupsen/logrus"
 
+    log "github.com/Sirupsen/logrus"
+    "github.com/icot/dbod/api"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -36,7 +38,7 @@ func init() {
 }
 
 func dump (cmd *cobra.Command, args []string) {
-	fmt.Println("dump called")
+	log.Debug("dump called")
 	config := viper.GetViper() // Find and read the config file
 	if len(args) != 1 {
 		log.Fatal("Error: please run $ dbod " + dumpCmd.Use )
@@ -44,4 +46,10 @@ func dump (cmd *cobra.Command, args []string) {
 	instance := args[0]
 	url := fmt.Sprintf("%s/%s/metadata", config.Get("api_instance_uri"), instance)
     log.Debug("API URL:" + url)
+    var metadata map[string] interface {}
+    metadata = api.GetInstance(instance)
+    str, _ := json.MarshalIndent(metadata, "", "  ")
+    fmt.Println(string(str))
 }
+
+
