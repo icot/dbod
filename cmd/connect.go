@@ -16,28 +16,26 @@ package cmd
 
 import (
 	"fmt"
-
+    "os"
+    "os/exec"
+    "strings"
+    "syscall"
+	
+    log "github.com/Sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+    "github.com/icot/dbod/api"
 )
 
 // connectCmd represents the connect command
 var connectCmd = &cobra.Command{
-	Use:   "connect",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		// TODO: Work your own magic here
-		fmt.Println("connect called")
-	},
+	Use:   "connect <instance>",
+	Short: "Connect to an instance using an external tool",
 }
 
 func init() {
 	RootCmd.AddCommand(connectCmd)
+	connectCmd.Run = connect
 
 	// Here you will define your flags and configuration settings.
 
@@ -49,4 +47,43 @@ func init() {
 	// is called directly, e.g.:
 	// connectCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
+}
+
+func connect (cmd *cobra.Command, args []string) {
+	
+    log.Debug(" connect called")
+	if len(args) != 1 {
+		log.Fatal("Error: please run $ dbod " + dumpCmd.Use )
+	}
+	instance := args[0]
+
+    // Read CLI commands and arguments from configuration
+	config := viper.GetViper()
+	url := fmt.Sprintf("%s/%s/metadata", config.Get("api_instance_uri"), instance)
+    log.Debug("API URL:" + url)
+
+    // Fetch instance metadata
+    var metadata map[string] interface {}
+    metadata = api.GetInstance(instance)
+    
+    db_type := "mysql"
+    fmt.Println(metadata["time"])
+
+    // Load 
+    cli := config.Sub("cli")
+    cmd_line := cli.GetStringMapString(db_type)
+    log.Debug("Client: ", cmd_line["client"])
+    cmd_args := strings.Fields(fmt.Sprintf(cmd_line["args"], instance, "5500"))
+    log.Debug("Cmd Line: ", cmd_args)
+    // Look for binary
+    binary, lookErr := exec.LookPath(cmd_line["client"])
+    if lookErr != nil {
+        log.Fatal(lookErr)
+    }
+    env := os.Environ()
+    // Execute client
+    execErr := syscall.Exec(binary, cmd_args, env)
+    if execErr != nil {
+        log.Fatal(execErr)
+    }
 }
