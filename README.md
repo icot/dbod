@@ -1,7 +1,7 @@
 # dbod
 CLI for DB On Demand API interactions
 
-[![Build Status]/(https://travis-ci.org/icot/dbod.svg?branch=master)](https://travis-ci.org/icot/dbod)
+[![Build Status](https://travis-ci.org/icot/dbod.svg?branch=master)](https://travis-ci.org/icot/dbod)
 
 ## Dependencies
 
