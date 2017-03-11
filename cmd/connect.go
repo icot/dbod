@@ -63,8 +63,7 @@ func connect (cmd *cobra.Command, args []string) {
     log.Debug("API URL:" + url)
 
     // Fetch instance metadata
-    var metadata map[string] interface {}
-    metadata = api.GetInstance(instance)
+    metadata := api.GetInstance(instance)
     
     db_type := "mysql"
     fmt.Println(metadata["time"])

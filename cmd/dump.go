@@ -42,8 +42,7 @@ func dump (cmd *cobra.Command, args []string) {
 		log.Fatal("Error: please run $ dbod " + dumpCmd.Use )
 	}
 	instance := args[0]
-    var metadata map[string] interface {}
-    metadata = api.GetInstance(instance)
+    metadata := api.GetInstance(instance)
     str, _ := json.MarshalIndent(metadata, "", "  ")
     fmt.Println(string(str))
 }
