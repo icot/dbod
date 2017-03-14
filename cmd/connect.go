@@ -64,13 +64,11 @@ func connect (cmd *cobra.Command, args []string) {
 
     // Fetch instance metadata
     metadata := api.GetInstance(instance)
-    
-    db_type := "mysql"
-    fmt.Println(metadata["time"])
+    db_type := metadata["db_type"]
 
     // Load 
     cli := config.Sub("cli")
-    cmd_line := cli.GetStringMapString(db_type)
+    cmd_line := cli.GetStringMapString(db_type.(string))
     log.Debug("Client: ", cmd_line["client"])
     cmd_args := strings.Fields(fmt.Sprintf(cmd_line["args"], instance, "5500"))
     log.Debug("Cmd Line: ", cmd_args)
