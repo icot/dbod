@@ -15,24 +15,18 @@ import (
     "io/ioutil"
     "net/http"
     "encoding/json"
+    "reflect"
 	
     log "github.com/Sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
-type JSON map[string] interface{}
+type Instance map[string] interface{}
 
-func GetInstance(instance string) JSON {
-
-    log.Debug("Dumping " + instance)
-    // Find and read the config file
-	config := viper.GetViper() 
-	url := fmt.Sprintf("%s/%s/metadata", config.Get("api_instance_uri"), instance)
-    log.Debug("API URL:" + url)
-
-    // Load CA certificate
+func initHTTPClient() *http.Client {
+	config := viper.GetViper()
     tls_conf := config.Sub("tls")
-    ca_file, err := ioutil.ReadFile(tls_conf.GetString("ca")) 
+    ca_file, err := ioutil.ReadFile(tls_conf.GetString("ca"))
     if err != nil {
         log.Fatal(err)
     }
@@ -45,7 +39,18 @@ func GetInstance(instance string) JSON {
     // Initialize Transport and HTTP Client
     tlsConf := &tls.Config{RootCAs: roots}
     tr := &http.Transport{TLSClientConfig: tlsConf}
-    client := &http.Client{Transport: tr}
+    return &http.Client{Transport: tr}
+}
+
+func GetInstance(instance string) Instance {
+
+    log.Debug("Dumping " + instance)
+    // Find and read the config file
+	config := viper.GetViper()
+	url := fmt.Sprintf("%s/%s/metadata", config.Get("api_instance_uri"), instance)
+    log.Debug("API URL:" + url)
+
+    client := initHTTPClient()
     res, err := client.Get(url)
 	if err != nil {
 		log.Fatal(err)
@@ -53,13 +58,17 @@ func GetInstance(instance string) JSON {
 
     body, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
-    var j JSON
+    var resp = make([]Instance, 0)
 	if err != nil {
 		log.Fatal(err)
 	} else {
+        log.Debug(reflect.TypeOf(resp))
         log.Debug(string(body))
-        json.Unmarshal(body, &j)
+        json.Unmarshal(body, &resp)
     }
-    return j
+
+    // API Response is an array of JSON Objects
+    return resp[0]
+
 }
 
