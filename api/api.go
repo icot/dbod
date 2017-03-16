@@ -58,7 +58,7 @@ func GetInstance(instance string) Instance {
 
     body, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
-    var resp = make([]Instance, 0)
+    var resp = make(map[string] []Instance, 0)
 	if err != nil {
 		log.Fatal(err)
 	} else {
@@ -68,7 +68,7 @@ func GetInstance(instance string) Instance {
     }
 
     // API Response is an array of JSON Objects
-    return resp[0]
+    return resp["response"][0]
 
 }
 
