@@ -11,10 +11,9 @@ package cmd
 import (
 	"fmt"
 
-    log "github.com/Sirupsen/logrus"
-    "github.com/icot/dbod/api"
+	log "github.com/Sirupsen/logrus"
+	"github.com/icot/dbod/api"
 	"github.com/spf13/cobra"
-	"github.com/hokaccha/go-prettyjson"
 )
 
 // dumpCmd represents the dump command
@@ -36,15 +35,12 @@ func init() {
 
 }
 
-func dump (cmd *cobra.Command, args []string) {
+func dump(cmd *cobra.Command, args []string) {
 	log.Debug("dump called")
 	if len(args) != 1 {
-		log.Fatal("Error: please run $ dbod " + dumpCmd.Use )
+		log.Fatal("Error: please run $ dbod " + dumpCmd.Use)
 	}
-	instance := args[0]
-    metadata := api.GetInstance(instance)
-    str, _ := prettyjson.Marshal(metadata)
-    fmt.Println(string(str))
+	metadata := api.GetInstance(args[0])
+	str, _ := prettyjson.Marshal(metadata)
+	fmt.Println(string(str))
 }
-
-

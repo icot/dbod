@@ -30,9 +30,9 @@ var DebugFlag bool
 var RootCmd = &cobra.Command{
 	Use:   "dbod",
 	Short: "DB On Demand CLI",
-// Uncomment the following line if your bare application
-// has an action associated with it:
-//	Run: func(cmd *cobra.Command, args []string) { },
+	// Uncomment the following line if your bare application
+	// has an action associated with it:
+	//	Run: func(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.
@@ -45,7 +45,7 @@ func Execute() {
 }
 
 func init() {
-    cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(initConfig)
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports Persistent Flags, which, if defined here,
@@ -63,27 +63,25 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	}
 
-    viper.SetConfigType("yaml")
-    viper.SetConfigName(".dbodrc") // name of config file (without extension)
-	viper.AddConfigPath("$HOME")  // adding home directory as first search path
-    viper.AddConfigPath(".")               // optionally look for config in the working directory
-	viper.AutomaticEnv()          // read in environment variables that match
+	viper.SetConfigType("yaml")
+	viper.SetConfigName(".dbodrc") // name of config file (without extension)
+	viper.AddConfigPath("$HOME")   // adding home directory as first search path
+	viper.AddConfigPath(".")       // optionally look for config in the working directory
+	viper.AutomaticEnv()           // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-        log.Debug("Using config file:", viper.ConfigFileUsed())
+		log.Debug("Using config file:", viper.ConfigFileUsed())
 	} else {
 		log.Fatal((fmt.Errorf("Fatal error config file: %s \n", err)))
-    }
-    // Set Logging level according to debug flag. Default is Info
-    viper.BindPFlag("debug", RootCmd.PersistentFlags().Lookup("debug"))
+	}
+	// Set Logging level according to debug flag. Default is Info
+	viper.BindPFlag("debug", RootCmd.PersistentFlags().Lookup("debug"))
 	if viper.GetBool("debug") {
-        log.SetLevel(log.DebugLevel)
-        log.Debug("Set log level to Debug")
-    } else {
-        log.SetLevel(log.InfoLevel)
-        log.Debug("Set log level to Info")
-    }
+		log.SetLevel(log.DebugLevel)
+		log.Debug("Set log level to Debug")
+	} else {
+		log.SetLevel(log.InfoLevel)
+		log.Debug("Set log level to Info")
+	}
 }
-
-

@@ -1,7 +1,7 @@
-package cmd 
+package cmd
 
 import "testing"
 
-func TestTwo (t *testing.T) {
+func TestTwo(t *testing.T) {
 
 }
