@@ -9,12 +9,12 @@
 package cmd
 
 import (
-    "encoding/json"
 	"fmt"
 
     log "github.com/Sirupsen/logrus"
     "github.com/icot/dbod/api"
 	"github.com/spf13/cobra"
+	"github.com/hokaccha/go-prettyjson"
 )
 
 // dumpCmd represents the dump command
@@ -43,7 +43,7 @@ func dump (cmd *cobra.Command, args []string) {
 	}
 	instance := args[0]
     metadata := api.GetInstance(instance)
-    str, _ := json.MarshalIndent(metadata, "", "  ")
+    str, _ := prettyjson.Marshal(metadata)
     fmt.Println(string(str))
 }
 
