@@ -12,6 +12,7 @@ import (
 	"fmt"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/hokaccha/go-prettyjson"
 	"github.com/icot/dbod/api"
 	"github.com/spf13/cobra"
 )
