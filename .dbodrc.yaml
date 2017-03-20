@@ -3,5 +3,9 @@ api_instance_uri: https://api-server/api/v1/instance
 tls:
     ca: /etc/ssl/certs/ssl-cert-snakeoil.pem
 cli:
-    mysql: "mycli -h %s -P %s"
-    mysql: "pgcli -h %s -p %s"
+    msyql:
+        client: mycli
+        args: "mycli -h dbod-%s -P %s"
+    pg: 
+        client: pgcli
+        args: "pgcli -h dbod-%s -p %s -U postgres postgres"
