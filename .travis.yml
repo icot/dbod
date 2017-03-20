@@ -4,4 +4,7 @@ go:
   - 1.7.x
   - master
 
+before_script:
+  - cp .dbodrc.yaml $HOME
+
 
