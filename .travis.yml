@@ -4,7 +4,13 @@ go:
   - 1.7.x
   - master
 
+before_install:
+  - go get github.com/mattn/goveralls
+
 before_script:
   - cp .dbodrc.yaml $HOME
+
+script:
+  - $HOME/gopath/bin/goveralls -service=travis-ci
 
 
