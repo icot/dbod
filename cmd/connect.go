@@ -59,7 +59,8 @@ func connect(cmd *cobra.Command, args []string) {
 
 	// Read CLI commands and arguments from configuration
 	config := viper.GetViper()
-	url := fmt.Sprintf("%s/%s/metadata", config.Get("api_instance_uri"), instance)
+	url := fmt.Sprintf("%s/%s/metadata", config.Get("api_instance_uri"),
+		instance)
 	log.Debug("API URL:" + url)
 
 	// Fetch instance metadata
@@ -74,7 +75,9 @@ func connect(cmd *cobra.Command, args []string) {
 	cli := config.Sub("cli")
 	cmd_line := cli.GetStringMapString(db_type.(string))
 	log.Debug("Client: ", cmd_line["client"])
-	cmd_args := strings.Fields(fmt.Sprintf(cmd_line["args"], instance, metadata["port"]))
+	cmd_args := strings.Fields(fmt.Sprintf(cmd_line["args"],
+		strings.Replace(instance, "_", "-", -1),
+		metadata["port"]))
 	log.Debug("Cmd Line: ", cmd_args)
 	// Look for binary
 	binary, lookErr := exec.LookPath(cmd_line["client"])
