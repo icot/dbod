@@ -67,6 +67,12 @@ func GetInstance(instance string) Instance {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	if res.StatusCode == 404 {
+		log.Info("Instance not found")
+		return nil
+	}
+
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
 	var resp = make(map[string][]Instance, 0)

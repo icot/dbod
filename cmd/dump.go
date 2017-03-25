@@ -42,6 +42,8 @@ func dump(cmd *cobra.Command, args []string) {
 		log.Fatal("Error: please run $ dbod " + dumpCmd.Use)
 	}
 	metadata := api.GetInstance(args[0])
-	str, _ := prettyjson.Marshal(metadata)
-	fmt.Println(string(str))
+	if metadata != nil {
+		str, _ := prettyjson.Marshal(metadata)
+		fmt.Println(string(str))
+	}
 }

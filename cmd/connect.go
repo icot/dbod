@@ -64,6 +64,10 @@ func connect(cmd *cobra.Command, args []string) {
 
 	// Fetch instance metadata
 	metadata := api.GetInstance(instance)
+	if metadata == nil {
+		log.Fatal("Instance not found")
+	}
+
 	db_type := metadata["db_type"]
 
 	// Load
