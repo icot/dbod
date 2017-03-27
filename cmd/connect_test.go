@@ -1,7 +1,13 @@
 package cmd
 
-import "testing"
+import (
+	"testing"
 
-func TestOne(t *testing.T) {
+	"github.com/stretchr/testify/assert"
+)
+
+func TestConnect(t *testing.T) {
+	ass := assert.New(t)
+	ass.Equal(1, 1, "Dummy test")
 
 }

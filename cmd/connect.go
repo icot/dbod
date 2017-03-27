@@ -53,7 +53,7 @@ func connect(cmd *cobra.Command, args []string) {
 
 	log.Debug(" connect called")
 	if len(args) != 1 {
-		log.Fatal("Error: please run $ dbod " + dumpCmd.Use)
+		log.Fatal("Error: please run $ dbod " + connectCmd.Use)
 	}
 	instance := args[0]
 
