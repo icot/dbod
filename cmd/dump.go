@@ -20,12 +20,17 @@ import (
 // dumpCmd represents the dump command
 var dumpCmd = &cobra.Command{
 	Use:   "dump <instance>",
-	Short: "Dumps an instance metadata",
+	Short: "dumps an instance's metadata",
 }
 
 func init() {
 	RootCmd.AddCommand(dumpCmd)
-	dumpCmd.Run = dump
+	dumpCmd.Run = func(cmd *cobra.Command, args []string) {
+		if len(args) != 1 {
+			log.Fatal("Error: please run $ dbod " + dumpCmd.Use)
+		}
+		dump(args[0])
+	}
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	//dumpCmd.PersistentFlags().String("instance", "", "database instance name")
@@ -36,12 +41,11 @@ func init() {
 
 }
 
-func dump(cmd *cobra.Command, args []string) {
-	log.Debug("dump called")
-	if len(args) != 1 {
-		log.Fatal("Error: please run $ dbod " + dumpCmd.Use)
-	}
-	metadata := api.GetInstance(args[0])
+// dump implements the main command functionality as an externally callable
+// function to make it easily testable
+func dump(instance_name string) {
+
+	metadata := api.GetInstance(instance_name)
 	if metadata != nil {
 		str, _ := prettyjson.Marshal(metadata)
 		fmt.Println(string(str))
