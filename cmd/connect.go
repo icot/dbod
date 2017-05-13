@@ -45,13 +45,13 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// connectCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	connectCmd.Flags().Bool("ssh", false, "Connect to instance host using SSH")
 
 }
 
 func connect(cmd *cobra.Command, args []string) {
 
-	log.Debug(" connect called")
+	log.Debug("inside connect()")
 	if len(args) != 1 {
 		log.Fatal("Error: please run $ dbod " + connectCmd.Use)
 	}
@@ -85,6 +85,14 @@ func connect(cmd *cobra.Command, args []string) {
 		log.Fatal(lookErr)
 	}
 	env := os.Environ()
+
+	// if --ssh flag is set to true, override cmd and cmd_args definition
+	if ssh_flag, _ := connectCmd.Flags().GetBool("ssh"); ssh_flag {
+		binary := "ssh"
+		cmd_args := fmt.Sprintf("ssh dbod-%s.cern.ch", instance)
+		log.Debug(fmt.Sprintf("%s %s", binary, cmd_args))
+	}
+
 	// Execute client
 	execErr := syscall.Exec(binary, cmd_args, env)
 	if execErr != nil {
