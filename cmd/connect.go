@@ -88,9 +88,11 @@ func connect(cmd *cobra.Command, args []string) {
 
 	// if --ssh flag is set to true, override cmd and cmd_args definition
 	if ssh_flag, _ := connectCmd.Flags().GetBool("ssh"); ssh_flag {
-		binary := "ssh"
-		cmd_args := fmt.Sprintf("ssh dbod-%s.cern.ch", instance)
-		log.Debug(fmt.Sprintf("%s %s", binary, cmd_args))
+		log.Debug("--ssh flag detected, overriding CLI")
+		binary, _ = exec.LookPath("ssh")
+		log.Debug("Client: ", binary)
+		cmd_args = []string{fmt.Sprintf("ssh dbod-%s.cern.ch ", instance)}
+		log.Debug("Cmd Line: ", cmd_args)
 	}
 
 	// Execute client
