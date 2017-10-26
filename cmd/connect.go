@@ -91,10 +91,9 @@ func connect(cmd *cobra.Command, args []string) {
 		log.Debug("--ssh flag detected, overriding CLI")
 		binary, _ = exec.LookPath("ssh")
 		log.Debug("Client: ", binary)
-		cmd_args = []string{fmt.Sprintf("ssh dbod-%s.cern.ch ", instance)}
+		cmd_args = []string{ "ssh", fmt.Sprintf("dbod-%s", instance) }
 		log.Debug("Cmd Line: ", cmd_args)
 	}
-
 	// Execute client
 	execErr := syscall.Exec(binary, cmd_args, env)
 	if execErr != nil {
